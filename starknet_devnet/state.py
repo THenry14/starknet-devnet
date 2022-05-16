@@ -8,14 +8,14 @@ from starkware.crypto.signature.signature import private_to_stark_key
 
 from .account import Account
 from .dump import Dumper
-from .starknet_wrapper import StarknetWrapper
+from .starknet_wrapper import StarknetWrapper, DevnetConfig
 
 class State():
     """
     Stores starknet wrapper and dumper
     """
     def __init__(self):
-        self.starknet_wrapper = StarknetWrapper()
+        self.starknet_wrapper = StarknetWrapper(config=DevnetConfig())
         self.dumper = Dumper(self.starknet_wrapper)
 
     def __set_starknet_wrapper(self, starknet_wrapper: StarknetWrapper):
@@ -23,9 +23,10 @@ class State():
         self.starknet_wrapper = starknet_wrapper
         self.dumper = Dumper(starknet_wrapper)
 
-    def reset(self):
+    def reset(self, config: DevnetConfig = None):
         """Reset the starknet wrapper and dumper instances"""
-        self.__set_starknet_wrapper(StarknetWrapper())
+        previous_config = self.starknet_wrapper.config
+        self.__set_starknet_wrapper(StarknetWrapper(config=config or previous_config))
 
     def load(self, load_path: str):
         """Loads starknet wrapper from path"""

@@ -16,6 +16,7 @@ Aims to mimic Starknet's Alpha testnet, but with simplified functionality.
 - [Block Explorer](#block-explorer)
 - [Lite Mode](#lite-mode)
 - [Restart](#restart)
+- [Advancing time](#advancing-time)
 - [Contract debugging](#contract-debugging)
 - [Devnet speed-up troubleshooting](#devnet-speed-up-troubleshooting)
 - [Development](#development)
@@ -68,6 +69,16 @@ optional arguments:
   --dump-path DUMP_PATH
                         Specify the path to dump to
   --dump-on DUMP_ON     Specify when to dump; can dump on: exit, transaction
+  --lite-mode           Applies all optimizations by disabling some
+                        features. These can be applied individually
+                        by using other flags instead of this one.
+  --lite-mode-block-hash
+                        Disables block hash calculation
+  --lite-mode-deploy-hash
+                        Disables deploy tx hash calculation
+  --start-time START_TIME
+                        Specify the start time of the genesis block
+                        in Unix time
 ```
 
 You can run `starknet-devnet` in a separate shell, or you can run it in background with `starknet-devnet &`.
@@ -117,7 +128,7 @@ If you don't specify the `HOST` part, the server will indeed be available on all
   - `call`
   - `deploy`
   - `estimate_fee`
-  - `get_block`
+  - `get_block` (currently pending block is not supported)
   - `get_code`
   - `get_full_contract`
   - `get_state_update`
@@ -136,7 +147,7 @@ If you don't specify the `HOST` part, the server will indeed be available on all
 
 ## Postman integration
 
-Postman is a Starknet utility that allows testing L1 <> L2 interactions. To utilize this, you can use [`starknet-hardhat-plugin`](https://github.com/Shard-Labs/starknet-hardhat-plugin), as witnessed in [this example](https://github.com/Shard-Labs/starknet-hardhat-example/blob/master/test/postman.test.ts). Or you can directly interact with the two Postman-specific endpoints:
+Postman is a Starknet utility that allows testing L1 <> L2 interaction. To utilize this, you can use [`starknet-hardhat-plugin`](https://github.com/Shard-Labs/starknet-hardhat-plugin), as witnessed in [this example](https://github.com/Shard-Labs/starknet-hardhat-example/blob/master/test/postman.test.ts). Or you can directly interact with the two Postman-specific endpoints:
 
 - Load a `StarknetMockMessaging` contract. The `address` parameter is optional; if provided, the `StarknetMockMessaging` contract will be fetched from that address, otherwise a new one will be deployed:
 
@@ -147,7 +158,7 @@ Postman is a Starknet utility that allows testing L1 <> L2 interactions. To util
     - [Ganache node](https://www.npmjs.com/package/ganache)
     - [Hardhat node](https://hardhat.org/hardhat-network/#running-stand-alone-in-order-to-support-wallets-and-other-software).
 
-- Flush. This will go through the new enqueued messages sent from L1 and send them to L2. This has to be done manually for L1 -> L2, but for L2 -> L1, it is done automatically:
+- Flush. This will go through the new enqueued messages, sending them from L1 to L2 and from L2 to L1:
   - `POST /postman/flush`
   - body: None
 
@@ -244,6 +255,42 @@ Consider passing these CLI flags on Devnet startup:
 ## Restart
 
 Devnet can be restarted by making a `POST /restart` request. All of the deployed contracts, blocks and storage updates will be restarted to the empty state. If you're using [the Hardhat plugin](https://github.com/Shard-Labs/starknet-hardhat-plugin#restart), run `await starknet.devnet.restart()`.
+
+## Advancing time
+
+Block timestamp can be manipulated by seting the exact time or seting the time offset. Timestamps methods won't generate a new block, but they will modify the time of the following blocks. All values should be set in [Unix time](https://en.wikipedia.org/wiki/Unix_time) and seconds.
+
+### Set time
+
+Sets the exact time of the next generated block. All blocks afterwards will keep a set offset.
+
+```
+POST /set_time
+{
+    "time": TIME_IN_SECONDS
+}
+```
+
+Warning: block time can be set in the past and lead to unexpected behaviour!
+
+### Increase time
+
+Increases the time offset for each generated block.
+
+```
+POST /increase_time
+{
+    "time": TIME_IN_SECONDS
+}
+```
+
+### Start time arg
+
+Devnet can be started with the `--start-time` argument.
+
+```
+starknet-devnet --start-time START_TIME_IN_SECONDS
+```
 
 ## Contract debugging
 

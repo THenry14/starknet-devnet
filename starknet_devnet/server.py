@@ -16,6 +16,7 @@ from .blueprints.feeder_gateway import feeder_gateway
 from .blueprints.postman import postman
 from .util import DumpOn, parse_args
 from .state import state
+from .starknet_wrapper import DevnetConfig
 
 app = Flask(__name__)
 CORS(app)
@@ -55,11 +56,22 @@ def handle_load(args):
 def handle_lite_mode(args):
     """Enable lite mode if specified."""
     if args.lite_mode:
-        state.starknet_wrapper.lite_mode_block_hash = True
-        state.starknet_wrapper.lite_mode_deploy_hash = True
+        config = DevnetConfig(
+            lite_mode_block_hash=True,
+            lite_mode_deploy_hash=True
+        )
     else:
-        state.starknet_wrapper.lite_mode_block_hash = args.lite_mode_block_hash
-        state.starknet_wrapper.lite_mode_deploy_hash = args.lite_mode_deploy_hash
+        config = DevnetConfig(
+            lite_mode_block_hash=args.lite_mode_block_hash,
+            lite_mode_deploy_hash=args.lite_mode_deploy_hash
+        )
+
+    state.starknet_wrapper.set_config(config)
+
+def handle_start_time(args):
+    """Assign start time if specified."""
+    if args.start_time is not None:
+        state.starknet_wrapper.set_block_time(args.start_time)
 
 def main():
     """Runs the server."""
@@ -74,6 +86,7 @@ def main():
     handle_load(args)
     handle_dump(args)
     handle_lite_mode(args)
+    handle_start_time(args)
 
     try:
         meinheld.listen((args.host, args.port))
