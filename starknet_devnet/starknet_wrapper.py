@@ -76,6 +76,9 @@ class StarknetWrapper:
         with open(path, "rb") as file:
             return pickle.load(file)
 
+    async def initialize(self):
+        await self.__get_starknet()
+
     async def __preserve_current_state(self, state: CarriedState):
         self.__current_carried_state = deepcopy(state)
         self.__current_carried_state.shared_state = state.shared_state

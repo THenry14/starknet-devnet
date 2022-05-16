@@ -14,25 +14,24 @@ from starkware.starknet.testing.contract import StarknetContract
 
 from starkware.python.utils import to_bytes
 
-from starknet_devnet.fee_token import DEFINITION, ADDRESS as FEE_TOKEN_ADDRESS
-
-CONTRACT_PATH = "accounts_artifacts/OpenZeppelin/0.1.0/Account.cairo/Account"
-# HASH = compute_contract_hash(contract_definition=DEFINITION))
-HASH = 361479646297615797917493841430922492724680358320444679508058603177506550951
-HASH_BYTES = to_bytes(HASH)
-SALT = 20
+from starknet_devnet.fee_token import DEFINITION as FEE_TOKEN_DEFINITION, ADDRESS as FEE_TOKEN_ADDRESS
 
 class Account:
     """Account contract wrapper."""
 
+    CONTRACT_PATH = "accounts_artifacts/OpenZeppelin/0.1.0/Account.cairo/Account"
     DEFINITION = ContractDefinition.load(load_nearby_contract(CONTRACT_PATH))
+    # HASH = compute_contract_hash(contract_definition=DEFINITION))
+    HASH = 361479646297615797917493841430922492724680358320444679508058603177506550951
+    HASH_BYTES = to_bytes(HASH)
+    SALT = 20
 
     def __init__(self, private_key: int, public_key: int, initial_balance: int):
         self.private_key = private_key
         self.public_key = public_key
         self.address = calculate_contract_address_from_hash(
-            salt=SALT,
-            contract_hash=HASH,
+            salt=Account.SALT,
+            contract_hash=Account.HASH,
             constructor_calldata=[public_key],
             caller_address=0
         )
@@ -44,10 +43,10 @@ class Account:
         account_state = account_carried_state.state
         assert not account_state.initialized
 
-        starknet.state.state.contract_definitions[HASH_BYTES] = Account.DEFINITION
+        starknet.state.state.contract_definitions[Account.HASH_BYTES] = Account.DEFINITION
 
         newly_deployed_account_state = await ContractState.create(
-            contract_hash=HASH_BYTES,
+            contract_hash=Account.HASH_BYTES,
             storage_commitment_tree=account_state.storage_commitment_tree
         )
 
@@ -63,6 +62,7 @@ class Account:
 
         # set initial balance
         fee_token_address = starknet.state.general_config.fee_token_address
+        assert fee_token_address == FEE_TOKEN_ADDRESS # TODO
         fee_token_storage_updates = starknet.state.state.contract_states[fee_token_address].storage_updates
 
         balance_address = pedersen_hash(get_selector_from_name("ERC20_balances"), self.address)
@@ -71,7 +71,7 @@ class Account:
 
         contract = StarknetContract(
             state=starknet.state,
-            abi=DEFINITION.abi,
+            abi=Account.DEFINITION.abi,
             contract_address=self.address,
             deploy_execution_info=None
         )

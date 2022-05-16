@@ -24,7 +24,7 @@ CORS(app)
 @app.before_first_request
 async def initialize_starknet():
     """Initialize Starknet to assert it's defined before its first use."""
-    await state.starknet_wrapper.get_starknet()
+    await state.starknet_wrapper.initialize()
 
 app.register_blueprint(base)
 app.register_blueprint(gateway)
