@@ -30,6 +30,19 @@ def fixed_length_hex(arg: int) -> str:
     """
     return f"0x{arg:064x}"
 
+@dataclass
+class Uint256:
+    """Abstraction of Uint256 type"""
+    low: int
+    high: int
+
+def felt_to_uint256(felt: int) -> Uint256:
+    """Converts felt to Uint256"""
+    return Uint256(
+        low=felt & ((1 << 128) - 1),
+        high=felt >> 128
+    )
+
 # Uncomment this once fork support is added
 # def _fork_url(name: str):
 #     """
@@ -59,6 +72,7 @@ def parse_dump_on(option: str):
 
 DEFAULT_ACCOUNTS = 10
 DEFAULT_INITIAL_BALANCE = 1000
+DEFAULT_GAS_PRICE = 0
 
 class NonNegativeAction(argparse.Action):
     """
@@ -144,6 +158,12 @@ def parse_args():
         "--start-time",
         action=NonNegativeAction,
         help="Specify the start time of the genesis block in Unix time"
+    )
+    parser.add_argument(
+        "--gas-price", "-g",
+        type=int,
+        default=DEFAULT_GAS_PRICE,
+        help="Specify the gas price in wei; defaults to {DEFAULT_GAS_PRICE}"
     )
     # Uncomment this once fork support is added
     # parser.add_argument(

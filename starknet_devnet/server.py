@@ -73,6 +73,10 @@ def handle_start_time(args):
     if args.start_time is not None:
         state.starknet_wrapper.set_block_time(args.start_time)
 
+def handle_gas_price(args):
+    """Assign gas_price"""
+    state.starknet_wrapper.set_gas_price(args.gas_price)
+
 def main():
     """Runs the server."""
 
@@ -87,6 +91,7 @@ def main():
     handle_dump(args)
     handle_lite_mode(args)
     handle_start_time(args)
+    handle_gas_price(args)
 
     try:
         meinheld.listen((args.host, args.port))

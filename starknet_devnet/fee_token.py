@@ -13,7 +13,7 @@ from starkware.python.utils import to_bytes
 
 DEFINITION = ContractDefinition.load(load_nearby_contract("ERC20"))
 # HASH = to_bytes(compute_contract_hash(contract_definition=DEFINITION))
-HASH = 375899817338126263298463755162657787890597705735749339531748983767835688120
+HASH = 375899817338126263298463755162657787890597705735749339531748983767835688120 # TODO add checking of this to tests
 HASH_BYTES = to_bytes(HASH)
 SALT = 10
 CONSTRUCTOR_CALLDATA = [
@@ -53,3 +53,4 @@ async def deploy(starknet: Starknet):
             # ...
         }
     )
+    print("DEBUG deployed token contract to", ADDRESS, "or", hex(ADDRESS))

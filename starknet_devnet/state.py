@@ -61,7 +61,7 @@ class State():
         self.starknet_wrapper.accounts = accounts
 
         # TODO is it ETH or WEI
-        print(f"Initial balance of each account: {initial_balance} ETH")
+        print(f"Initial balance of each account: {initial_balance} WEI")
         print("Seed:", seed)
         print()
 

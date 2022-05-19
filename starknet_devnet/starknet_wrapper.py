@@ -14,7 +14,7 @@ from starkware.starknet.services.api.gateway.contract_address import calculate_c
 from starkware.starknet.services.api.gateway.transaction import InvokeFunction, Deploy
 from starkware.starknet.testing.starknet import Starknet
 from starkware.starkware_utils.error_handling import StarkException
-from starkware.starknet.business_logic.transaction_fee import calculate_tx_fee_by_cairo_usage
+from starkware.starknet.business_logic.transaction_fee import calculate_tx_fee
 from starkware.starknet.services.api.feeder_gateway.response_objects import TransactionStatus
 
 from .account import Account
@@ -82,6 +82,7 @@ class StarknetWrapper:
         """
         if not self.__starknet:
             self.__starknet = await Starknet.empty(general_config=DEFAULT_GENERAL_CONFIG)
+            # TODO move to `initialize`
             await fee_token.deploy(self.__starknet)
             assert self.accounts is not None
             await self.__deploy_accounts()
@@ -313,12 +314,17 @@ class StarknetWrapper:
 
         execution_info = await call_internal_tx(state.copy(), internal_tx)
 
-        actual_fee = calculate_tx_fee_by_cairo_usage(
-            general_config=state.general_config,
-            cairo_resource_usage=execution_info.call_info.execution_resources.to_dict(),
-            l1_gas_usage=0,
-            gas_price=state.general_config.min_gas_price
+        actual_fee = calculate_tx_fee(
+            call_info=execution_info.call_info,
+            state=state.state,
+            general_config=state.general_config
         )
+        # actual_fee = calculate_tx_fee_by_cairo_usage(
+        #     general_config=state.general_config,
+        #     cairo_resource_usage=execution_info.call_info.execution_resources.to_dict(),
+        #     l1_gas_usage=0,
+        #     gas_price=state.state.block_info.gas_price
+        # )
 
         return actual_fee
 
@@ -329,3 +335,7 @@ class StarknetWrapper:
     def set_block_time(self, time_s: int):
         """Sets the block time to `time_s`."""
         self.block_info_generator.set_next_block_time(time_s)
+
+    def set_gas_price(self, gas_price: int):
+        """Sets gas price to `gas_price`."""
+        self.block_info_generator.set_gas_price(gas_price)
