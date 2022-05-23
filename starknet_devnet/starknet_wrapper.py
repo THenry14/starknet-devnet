@@ -70,7 +70,13 @@ class StarknetWrapper:
             return pickle.load(file)
 
     async def initialize(self):
-        await self.__get_starknet()
+        """Initialize the underlying starknet instance, fee_token and accounts."""
+        starknet = await self.__get_starknet()
+
+        await fee_token.deploy(starknet)
+        await self.__deploy_accounts()
+
+        await self.__preserve_current_state(starknet.state.state)
 
     async def __preserve_current_state(self, state: CarriedState):
         self.__current_carried_state = deepcopy(state)
@@ -82,13 +88,6 @@ class StarknetWrapper:
         """
         if not self.__starknet:
             self.__starknet = await Starknet.empty(general_config=DEFAULT_GENERAL_CONFIG)
-            # TODO move to `initialize`
-            await fee_token.deploy(self.__starknet)
-            assert self.accounts is not None
-            await self.__deploy_accounts()
-
-            await self.__preserve_current_state(self.__starknet.state.state)
-
         return self.__starknet
 
     async def get_state(self):
