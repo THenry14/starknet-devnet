@@ -13,7 +13,7 @@ from starkware.starknet.testing.starknet import Starknet
 from starkware.starknet.testing.contract import StarknetContract
 from starkware.python.utils import to_bytes
 
-from starknet_devnet.util import felt_to_uint256
+from starknet_devnet.util import Uint256
 
 class Account:
     """Account contract wrapper."""
@@ -62,7 +62,7 @@ class Account:
         fee_token_storage_updates = starknet.state.state.contract_states[fee_token_address].storage_updates
 
         balance_address = pedersen_hash(get_selector_from_name("ERC20_balances"), self.address)
-        initial_balance_uint256 = felt_to_uint256(self.initial_balance)
+        initial_balance_uint256 = Uint256.from_felt(self.initial_balance)
         fee_token_storage_updates[balance_address] = StorageLeaf(initial_balance_uint256.low)
         fee_token_storage_updates[balance_address + 1] = StorageLeaf(initial_balance_uint256.high)
 

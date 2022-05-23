@@ -36,12 +36,17 @@ class Uint256:
     low: int
     high: int
 
-def felt_to_uint256(felt: int) -> Uint256:
-    """Converts felt to Uint256"""
-    return Uint256(
-        low=felt & ((1 << 128) - 1),
-        high=felt >> 128
-    )
+    def to_felt(self) -> int:
+        """Converts to felt."""
+        return (self.high << 128) + self.low
+
+    @staticmethod
+    def from_felt(felt: int) -> "Uint256":
+        """Converts felt to Uint256"""
+        return Uint256(
+            low=felt & ((1 << 128) - 1),
+            high=felt >> 128
+        )
 
 # Uncomment this once fork support is added
 # def _fork_url(name: str):

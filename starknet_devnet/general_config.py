@@ -11,7 +11,7 @@ from starkware.starknet.definitions.general_config import (
 )
 from starkware.starknet.definitions import constants
 
-from . import fee_token
+from .fee_token import FeeToken
 
 DEFAULT_GENERAL_CONFIG = build_general_config({
     "cairo_resource_fee_weights": {
@@ -25,7 +25,7 @@ DEFAULT_GENERAL_CONFIG = build_general_config({
     "sequencer_address": hex(DEFAULT_SEQUENCER_ADDRESS),
     "starknet_os_config": {
         "chain_id": DEFAULT_CHAIN_ID.name,
-        "fee_token_address": hex(fee_token.ADDRESS)
+        "fee_token_address": hex(FeeToken.ADDRESS)
     },
     "tx_version": constants.TRANSACTION_VERSION,
     "tx_commitment_tree_height": constants.TRANSACTION_COMMITMENT_TREE_HEIGHT

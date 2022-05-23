@@ -60,7 +60,6 @@ class State():
 
         self.starknet_wrapper.accounts = accounts
 
-        # TODO is it ETH or WEI
         print(f"Initial balance of each account: {initial_balance} WEI")
         print("Seed to replicate this account sequence:", seed)
         print()

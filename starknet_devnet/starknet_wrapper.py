@@ -18,11 +18,11 @@ from starkware.starknet.business_logic.transaction_fee import calculate_tx_fee
 from starkware.starknet.services.api.feeder_gateway.response_objects import TransactionStatus
 
 from .account import Account
-from . import fee_token
+from .fee_token import FeeToken
 from .general_config import DEFAULT_GENERAL_CONFIG
 from .origin import NullOrigin, Origin
 from .util import (
-    StarknetDevnetException, DummyExecutionInfo,
+    DummyExecutionInfo,
     enable_pickling, generate_state_update
 )
 from .contract_wrapper import ContractWrapper, call_internal_tx
@@ -73,7 +73,7 @@ class StarknetWrapper:
         """Initialize the underlying starknet instance, fee_token and accounts."""
         starknet = await self.__get_starknet()
 
-        await fee_token.deploy(starknet)
+        await FeeToken.deploy(starknet)
         await self.__deploy_accounts()
 
         await self.__preserve_current_state(starknet.state.state)

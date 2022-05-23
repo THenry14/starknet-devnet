@@ -2,6 +2,7 @@
 Base routes
 """
 from flask import Blueprint, Response, request, jsonify
+from starknet_devnet.fee_token import FeeToken
 
 from starknet_devnet.state import state
 from starknet_devnet.util import StarknetDevnetException
@@ -64,3 +65,14 @@ def set_time():
     state.starknet_wrapper.set_block_time(time_s)
 
     return jsonify({"next_block_timestamp": time_s})
+
+@base.route("/get_account_balance", methods=["GET"])
+async def get_balance():
+    """Gets balance for the address"""
+
+    address = request.args.get("address", type=lambda x: int(x, 16))
+    balance = await FeeToken.get_balance(address)
+    return jsonify({
+        "amount": balance,
+        "unit": "wei"
+    })
