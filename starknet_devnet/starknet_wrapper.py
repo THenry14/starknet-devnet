@@ -235,13 +235,6 @@ class StarknetWrapper:
         invoke_transaction: InternalInvokeFunction = InternalInvokeFunction.from_external(invoke_function, state.general_config)
 
         try:
-            # TODO This check might not be needed in future versions which will interact with the token contract
-            if invoke_transaction.max_fee: # handle only if non-zero
-                actual_fee = await self.calculate_actual_fee(invoke_function)
-                if actual_fee > invoke_transaction.max_fee:
-                    message = f"Actual fee exceeded max fee.\n{actual_fee} > {invoke_transaction.max_fee}"
-                    raise StarknetDevnetException(message=message)
-
             contract_wrapper = self.contracts.get_by_address(invoke_transaction.contract_address)
             adapted_result, execution_info = await contract_wrapper.invoke(
                 entry_point_selector=invoke_transaction.entry_point_selector,

@@ -62,7 +62,7 @@ class State():
 
         # TODO is it ETH or WEI
         print(f"Initial balance of each account: {initial_balance} WEI")
-        print("Seed:", seed)
+        print("Seed to replicate this account sequence:", seed)
         print()
 
 state = State()
