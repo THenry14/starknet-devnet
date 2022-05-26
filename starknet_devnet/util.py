@@ -75,9 +75,23 @@ def parse_dump_on(option: str):
         return DumpOn[option.upper()]
     sys.exit(f"Error: Invalid --dump-on option: {option}. Valid options: {DUMP_ON_OPTIONS_STRINGIFIED}")
 
+def int_or_float(value: str):
+    """Parses the value as either an int or a float."""
+    try:
+        return int(value)
+    except ValueError:
+        pass
+
+    try:
+        return int(float(value))
+    except ValueError:
+        pass
+
+    sys.exit(f"Error: {value} is neither an integer nor a float")
+
 DEFAULT_ACCOUNTS = 10
 DEFAULT_INITIAL_BALANCE = 1000
-DEFAULT_GAS_PRICE = 0
+DEFAULT_GAS_PRICE = 100_000_000_000
 
 class NonNegativeAction(argparse.Action):
     """
@@ -150,7 +164,7 @@ def parse_args():
     )
     parser.add_argument(
         "--initial-balance", "-e",
-        type=int,
+        type=int_or_float,
         help=f"Specify the initial balance of accounts to be predeployed; defaults to {DEFAULT_INITIAL_BALANCE}",
         default=DEFAULT_INITIAL_BALANCE
     )
@@ -162,13 +176,13 @@ def parse_args():
     parser.add_argument(
         "--start-time",
         action=NonNegativeAction,
-        help="Specify the start time of the genesis block in Unix time"
+        help="Specify the start time of the genesis block in Unix time seconds"
     )
     parser.add_argument(
         "--gas-price", "-g",
-        type=int,
+        type=int_or_float,
         default=DEFAULT_GAS_PRICE,
-        help="Specify the gas price in wei; defaults to {DEFAULT_GAS_PRICE}"
+        help="Specify the gas price in wei per gas unit; defaults to {DEFAULT_GAS_PRICE}"
     )
     # Uncomment this once fork support is added
     # parser.add_argument(

@@ -52,7 +52,7 @@ class State():
             )
             accounts.append(account)
 
-            print(f"Account {i}")
+            print(f"Account #{i}")
             print(f"Address: {hex(account.address)}")
             print(f"Public key: {hex(account.public_key)}")
             print(f"Private key: {hex(account.private_key)}")
