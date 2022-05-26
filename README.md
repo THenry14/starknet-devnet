@@ -29,7 +29,7 @@ pip install starknet-devnet
 
 ### Requirements
 
-Works with Python versions >=3.7.2 and <=3.9.10.
+Works with Python versions >=3.7.2 and <3.10.
 
 On Ubuntu/Debian, first run:
 
@@ -265,7 +265,7 @@ Block timestamp can be manipulated by seting the exact time or seting the time o
 
 ### Set time
 
-Sets the exact time of the next generated block. All blocks afterwards will keep a set offset.
+Sets the exact time of the next generated block. All subsequent blocks will keep the set offset.
 
 ```
 POST /set_time
