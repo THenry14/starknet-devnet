@@ -61,10 +61,7 @@ def devnet_in_background(*devnet_args, **devnet_kwargs):
 
 def assert_equal(actual, expected, explanation=None):
     """Assert that the two values are equal. Optionally provide explanation."""
-    if actual != expected:
-        if explanation:
-            print("Assertion failed:", explanation)
-        raise AssertionError(f"\nActual: {actual}\nExpected: {expected}")
+    assert actual == expected, f"\nActual: {actual}\nExpected: {expected}\nAdditional_info: {explanation}"
 
 def extract(regex, stdout):
     """Extract from `stdout` what matches `regex`."""
@@ -160,8 +157,7 @@ def assert_transaction_not_received(tx_hash):
 
 def assert_transaction_receipt_not_received(tx_hash):
     """Assert correct tx receipt response when there is no tx with `tx_hash`."""
-    output = run_starknet(["get_transaction_receipt", "--hash", tx_hash])
-    receipt = json.loads(output.stdout)
+    receipt = get_transaction_receipt(tx_hash)
     assert_equal(receipt, {
         "events": [],
         "l2_to_l1_messages": [],
@@ -209,7 +205,7 @@ def estimate_fee(function, inputs, address, abi_path, signature=None):
     return extract_fee(output.stdout)
 
 
-def call(function, address, abi_path, inputs=None):
+def call(function, address, abi_path, inputs=None, signature=None, max_fee=None):
     """Wrapper around starknet call"""
     args = [
         "call",
@@ -219,6 +215,11 @@ def call(function, address, abi_path, inputs=None):
     ]
     if inputs:
         args.extend(["--inputs", *inputs])
+    if signature:
+        args.extend(["--signature", *signature])
+    if max_fee:
+        args.extend(["--max_fee", max_fee])
+
     output = run_starknet(args)
 
     print("Call successful!")
@@ -235,7 +236,7 @@ def assert_tx_status(tx_hash, expected_tx_status):
     output = run_starknet(["tx_status", "--hash", tx_hash])
     response = json.loads(output.stdout)
     tx_status = response["tx_status"]
-    assert_equal(tx_status, expected_tx_status)
+    assert_equal(tx_status, expected_tx_status, response)
 
     if tx_status == "REJECTED":
         assert "tx_failure_reason" in response, f"Key not found in {response}"
@@ -270,10 +271,14 @@ def load_json_from_path(path):
     with open(path, encoding="utf-8") as expected_file:
         return json.load(expected_file)
 
+def get_transaction_receipt(tx_hash):
+    """Fetches the transaction receipt of transaction with tx_hash"""
+    output = run_starknet(["get_transaction_receipt", "--hash", tx_hash])
+    return json.loads(output.stdout)
+
 def assert_receipt(tx_hash, expected_path):
     """Asserts the content of the receipt of tx with tx_hash."""
-    output = run_starknet(["get_transaction_receipt", "--hash", tx_hash])
-    receipt = json.loads(output.stdout)
+    receipt = get_transaction_receipt(tx_hash)
     expected_receipt = load_json_from_path(expected_path)
 
     assert_equal(receipt["transaction_hash"], tx_hash)
@@ -285,8 +290,7 @@ def assert_receipt(tx_hash, expected_path):
 
 def assert_events(tx_hash, expected_path):
     """Asserts the content of the events element of the receipt of tx with tx_hash."""
-    output = run_starknet(["get_transaction_receipt", "--hash", tx_hash])
-    receipt = json.loads(output.stdout)
+    receipt = get_transaction_receipt(tx_hash)
     expected_receipt = load_json_from_path(expected_path)
     assert_equal(receipt["events"], expected_receipt["events"])
 

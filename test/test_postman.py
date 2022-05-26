@@ -2,9 +2,6 @@
 Test postman usage. This test has one single pytest case, because the whole flow needs to be tested, and requires all steps to be performed
 """
 
-
-
-
 import time
 import json
 import subprocess
