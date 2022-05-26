@@ -52,7 +52,6 @@ class Account:
         starknet.state.state.contract_states[self.address] = ContractCarriedState(
             state=newly_deployed_account_state,
             storage_updates={
-                # TODO read "Account_public_key" from a constant; include a test which asserts that ABI indeed contains it
                 get_selector_from_name("Account_public_key"): StorageLeaf(self.public_key)
             }
         )
