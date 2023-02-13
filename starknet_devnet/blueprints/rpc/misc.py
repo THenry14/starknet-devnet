@@ -7,7 +7,6 @@ from __future__ import annotations
 from typing import Union
 
 from starkware.starknet.services.api.feeder_gateway.response_objects import (
-    LATEST_BLOCK_ID,
     PENDING_BLOCK_ID,
 )
 
