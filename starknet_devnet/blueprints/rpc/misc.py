@@ -34,7 +34,7 @@ def check_address(address, event):
     """
     Check address.
     """
-    return bool(event.from_address == int(address, 0))
+    return event.from_address == int(address, 0)
 
 
 def check_keys(keys, event):
@@ -49,7 +49,7 @@ def get_events_from_block(block, address, keys):
     Return filtered events.
     """
     events = []
-    for transaction, event in [
+    for receipt, event in [
         (r, e) for r in block.transaction_receipts for e in r.events
     ]:
         if check_keys(keys, event) and check_address(address, event):
@@ -59,7 +59,7 @@ def get_events_from_block(block, address, keys):
                 "data": [rpc_felt(d) for d in event.data],
                 "block_hash": rpc_felt(block.block_hash),
                 "block_number": block.block_number,
-                "transaction_hash": rpc_felt(transaction.transaction_hash),
+                "transaction_hash": rpc_felt(receipt.transaction_hash),
             }
             events.append(_event)
 

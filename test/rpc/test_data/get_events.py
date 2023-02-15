@@ -3,6 +3,8 @@ RPC get events test data.
 """
 from test.shared import (
     EXPECTED_FEE_TOKEN_ADDRESS,
+    FEE_CHARGED_EVENT_KEY,
+    INCREASE_BALANCE_CALLED_EVENT_KEY,
     PREDEPLOY_ACCOUNT_CLI_ARGS,
     PREDEPLOYED_ACCOUNT_ADDRESS,
 )
@@ -13,8 +15,8 @@ BLOCK_FROM_0_TO_LATEST = {
     "from_block": {"block_number": 0},
     "address": rpc_felt(EXPECTED_FEE_TOKEN_ADDRESS),
     "keys": [
-        rpc_felt("0x99cd8bde557814842a3121e8ddfd433a539b8c9f14bf31ebf108d12e6196e9"),
-        rpc_felt("0x3db3da4221c078e78bd987e54e1cc24570d89a7002cefa33e548d6c72c73f9d"),
+        rpc_felt(FEE_CHARGED_EVENT_KEY),
+        rpc_felt(INCREASE_BALANCE_CALLED_EVENT_KEY),
     ],
     "to_block": "latest",
     "chunk_size": 10,
@@ -24,7 +26,7 @@ BLOCK_FROM_0x0_TO_LATEST = {
     "from_block": {"block_hash": rpc_felt("0x0")},
     "address": rpc_felt(EXPECTED_FEE_TOKEN_ADDRESS),
     "keys": [
-        rpc_felt("0x99cd8bde557814842a3121e8ddfd433a539b8c9f14bf31ebf108d12e6196e9"),
+        rpc_felt(FEE_CHARGED_EVENT_KEY),
     ],
     "to_block": "latest",
     "chunk_size": 10,
@@ -35,7 +37,7 @@ BLOCK_FROM_0_TO_LATEST_MALFORMED_REQUEST = {
     "to_block": "latest",
     "address": rpc_felt(EXPECTED_FEE_TOKEN_ADDRESS),
     "keys": [
-        rpc_felt("0x99cd8bde557814842a3121e8ddfd433a539b8c9f14bf31ebf108d12e6196e9"),
+        rpc_felt(FEE_CHARGED_EVENT_KEY),
     ],
     "chunk_size": "test",
 }
@@ -43,7 +45,7 @@ BLOCK_FROM_0_TO_LATEST_MALFORMED_REQUEST = {
 BLOCK_FROM_0_TO_LATEST_MISSING_PARAMETER = {
     "from_block": {"block_number": 0},
     "keys": [
-        rpc_felt("0x99cd8bde557814842a3121e8ddfd433a539b8c9f14bf31ebf108d12e6196e9"),
+        rpc_felt(FEE_CHARGED_EVENT_KEY),
     ],
     "to_block": "latest",
     "chunk_size": 10,
@@ -53,7 +55,7 @@ BLOCK_FROM_0_TO_LATEST_WRONG_BLOCK_TYPE = {
     "from_block": {"block_number": "0x0"},
     "address": rpc_felt(EXPECTED_FEE_TOKEN_ADDRESS),
     "keys": [
-        rpc_felt("0x99cd8bde557814842a3121e8ddfd433a539b8c9f14bf31ebf108d12e6196e9"),
+        rpc_felt(FEE_CHARGED_EVENT_KEY),
     ],
     "to_block": "latest",
     "chunk_size": 10,
@@ -64,7 +66,7 @@ BLOCK_FROM_0_TO_2 = {
     "to_block": {"block_number": 2},
     "address": rpc_felt(EXPECTED_FEE_TOKEN_ADDRESS),
     "keys": [
-        rpc_felt("0x99cd8bde557814842a3121e8ddfd433a539b8c9f14bf31ebf108d12e6196e9"),
+        rpc_felt(FEE_CHARGED_EVENT_KEY),
     ],
     "chunk_size": 10,
 }
@@ -74,7 +76,7 @@ BLOCK_FROM_3_TO_3 = {
     "to_block": {"block_number": 3},
     "address": rpc_felt(EXPECTED_FEE_TOKEN_ADDRESS),
     "keys": [
-        rpc_felt("0x99cd8bde557814842a3121e8ddfd433a539b8c9f14bf31ebf108d12e6196e9"),
+        rpc_felt(FEE_CHARGED_EVENT_KEY),
     ],
     "chunk_size": 10,
 }
@@ -84,7 +86,7 @@ BLOCK_FROM_2_TO_3 = {
     "to_block": {"block_number": 3},
     "address": rpc_felt(EXPECTED_FEE_TOKEN_ADDRESS),
     "keys": [
-        rpc_felt("0x99cd8bde557814842a3121e8ddfd433a539b8c9f14bf31ebf108d12e6196e9"),
+        rpc_felt(FEE_CHARGED_EVENT_KEY),
     ],
     "chunk_size": 10,
 }
@@ -93,7 +95,7 @@ BLOCK_FROM_0_TO_LATEST_CHUNK_SIZE_1 = {
     "from_block": {"block_number": 0},
     "address": rpc_felt(EXPECTED_FEE_TOKEN_ADDRESS),
     "keys": [
-        rpc_felt("0x99cd8bde557814842a3121e8ddfd433a539b8c9f14bf31ebf108d12e6196e9"),
+        rpc_felt(FEE_CHARGED_EVENT_KEY),
     ],
     "to_block": "latest",
     "chunk_size": 1,
@@ -104,7 +106,7 @@ BLOCK_FROM_0_TO_LATEST_CHUNK_1_CONTINUATION_TOKEN = {
     "to_block": "latest",
     "address": rpc_felt(EXPECTED_FEE_TOKEN_ADDRESS),
     "keys": [
-        rpc_felt("0x99cd8bde557814842a3121e8ddfd433a539b8c9f14bf31ebf108d12e6196e9"),
+        rpc_felt(FEE_CHARGED_EVENT_KEY),
     ],
     "chunk_size": 1,
     "continuation_token": "1",
@@ -115,7 +117,7 @@ BLOCK_FROM_0_TO_1_CHUNK_3_CONTINUATION_TOKEN = {
     "to_block": {"block_number": 1},
     "address": rpc_felt(EXPECTED_FEE_TOKEN_ADDRESS),
     "keys": [
-        rpc_felt("0x99cd8bde557814842a3121e8ddfd433a539b8c9f14bf31ebf108d12e6196e9"),
+        rpc_felt(FEE_CHARGED_EVENT_KEY),
     ],
     "chunk_size": 3,
     "continuation_token": "0",
